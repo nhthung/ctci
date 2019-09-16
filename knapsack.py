@@ -17,7 +17,6 @@ def knapsack(weights, values, max_weight):
                 
                 if cur_value > K[weight_limit]:
                     K[weight_limit] = cur_value
-    
     return K
 
 '''
@@ -60,7 +59,6 @@ def knapsack_2(weights, values, max_weight):
                                         K[i - 1][weight_limit])
             else:
                 K[i][weight_limit] = K[i - 1][weight_limit]
-    
     return K
 
 def traceback(K, weights):
