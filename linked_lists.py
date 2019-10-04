@@ -1,58 +1,5 @@
-class LinkedList:
-    '''
-    Singly linked list
-    '''
-    def __init__(self, head=None):
-        self.head = head
-    
-    def add(self, data):
-        cur = self.head
-        while cur.next:
-            cur = cur.next
-        
-        cur.next = Node(data)
+from utils.linked_lists import *
 
-        return self
-    
-    def pop(self, idx=None):
-        cur = self.head
-        cur_idx = 0
-
-        if idx == 0:
-            popped = cur
-            self.head = cur.next
-            popped.next = None
-        else:
-            while cur.next and cur.next.next:
-                if idx and idx == cur_idx + 1:
-                    break
-
-                cur = cur.next
-                cur_idx += 1
-            
-            popped = cur.next
-            cur.next = cur.next.next
-            popped.next = None
-
-        return popped
-        
-    def __str__(self):
-        l = []
-        cur = self.head
-
-        while cur.next:
-            l.append(cur.data)
-            cur = cur.next
-        
-        l.append(cur.data)
-
-        return str(l)
-
-
-class Node:
-    def __init__(self, data, next=None):
-        self.data = data
-        self.next = next
 
 def weave(ll1, ll2):
     '''
@@ -80,26 +27,6 @@ def weave(ll1, ll2):
         t2.next = t1
         
         p1 = t1
-    
-    return ll
-
-
-def concat(ll1, ll2):
-    cur = ll1.head
-    while cur.next:
-        cur = cur.next
-    
-    cur.next = ll2.head
-    ll = ll1
-    return ll
-
-
-def make_ll(list):
-    ll = LinkedList(head=Node(list[0]))
-
-    if len(list) > 1:
-        for el in list[1:]:
-            ll.add(el)
     
     return ll
 
@@ -146,16 +73,6 @@ def remove_dups(ll):
     
     return ll
 
-def make_list(ll):
-    l = []
-    cur = ll.head
-
-    while cur:
-        l.append(cur.data)
-        cur = cur.next
-    
-    return l
-
 ll = make_ll([1,1,2,3,3,4])
 assert make_list(remove_dups(ll)) == [1,2,3,4]
 
@@ -184,5 +101,93 @@ assert make_list(remove_dups_2(ll)) == [1,2,3,4]
 Return Kth to Last:
 Implement an algorithm to find the kth to last element of a singly linked list.
 '''
-def k_to_last(ll):
+def k_to_last(ll, k):
+    length = 0
+    cur = ll.head
+
+    while cur:
+        cur = cur.next
+        length += 1
+    
+    if k > length:
+        raise ValueError('k exceeds length of list')
+
+    cur = ll.head
+    for i in range(length - k):
+        cur = cur.next
+    
+    return cur.data
+
+ll = make_ll([1,1,2,3,3,4])
+assert k_to_last(ll, k=4) == 2
+
+
+'''
+Delete Middle Node:
+Implement an algorithm to delete a node in the middle (i.e., any node but
+the first and last node, not necessarily the exact middle) of a
+singly linked list, given only access to that node.
+'''
+def del_middle(node):
     pass
+
+ll = make_ll([1,1,2,3,3,4])
+
+# Want to delete 3rd node
+
+
+'''
+Partition:
+Write code to partition a linked list around a value x, such that all nodes less than x come
+before all nodes greater than or equal to x. If x is contained within the list, the values of x only need
+to be after the elements less than x (see below). The partition element x can appear anywhere in the
+"right partition"; it does not need to appear between the left and right partitions.
+'''
+def partition(ll, x):
+    head = ll.head
+    tail = ll.head
+
+    cur = ll.head
+    while cur:
+        nxt = cur.next
+        if cur.data < x:
+            cur.next = head
+            head = cur
+            ll.head = head
+        else:
+            tail.next = cur
+            tail = cur
+        cur = nxt
+    tail.next = None
+
+    return ll
+
+ll = make_ll([3,5,8,5,10,2,1])
+assert make_list(partition(ll, x=8)) == [1, 2, 5, 5, 3, 8, 10]
+
+
+def add_ll(l1_node, l2_node, carry=0):
+    if l1_node == l2_node == None and carry == 0:
+        return
+    
+    value = carry
+
+    if l1_node:
+        value += l1_node.data
+    if l2_node:
+        value += l2_node.data
+    
+    result = Node(value % 10)
+
+    if l1_node or l1_node:
+        result.next = add_ll(
+            l1_node.next if l1_node else None,
+            l2_node.next if l2_node else None,
+            1 if value >= 10 else 0
+        )
+    
+    return result
+
+l1 = make_ll([7,1,6])
+l2 = make_ll([5,9,2])
+assert make_list(LinkedList(add_ll(l1.head, l2.head))) == [2, 1, 9]
