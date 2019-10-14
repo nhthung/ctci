@@ -7,6 +7,11 @@ class LinkedList:
     
     def add(self, data):
         cur = self.head
+
+        if not cur:
+            self.head = Node(data)
+            return self
+
         while cur.next:
             cur = cur.next
         
@@ -15,10 +20,13 @@ class LinkedList:
         return self
     
     def pop(self, idx=None):
+        '''
+        By default pop most recently added element.
+        '''
         cur = self.head
         cur_idx = 0
 
-        if idx == 0:
+        if idx == 0 or self.head.next is None:
             popped = cur
             self.head = cur.next
             popped.next = None
@@ -35,6 +43,27 @@ class LinkedList:
             popped.next = None
 
         return popped
+
+    def peek(self, idx=None):
+        cur = self.head
+        cur_idx = 0
+
+        if idx == 0 or self.head.next is None:
+            peeked = cur
+        else:
+            while cur.next and cur.next.next:
+                if idx and idx == cur_idx + 1:
+                    break
+
+                cur = cur.next
+                cur_idx += 1
+            
+            peeked = cur.next
+
+        return peeked
+
+    def is_empty(self):
+        return not self.head
         
     def __str__(self):
         l = []
@@ -87,3 +116,9 @@ def make_list(ll):
 
 def print_ll(ll):
     print(make_list(ll))
+
+
+if __name__ == '__main__':
+    ll = make_ll([1,2])
+    print(ll.pop(0).data)
+    print(ll.head.data)
